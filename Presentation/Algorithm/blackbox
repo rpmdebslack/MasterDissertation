@@ -1,0 +1,23 @@
+\begin{tikzpicture}
+
+\tikzstyle{lcomp}=[draw, fill=blue!20, text width=5em, 
+        text centered, minimum height=2.5em,text centered]
+
+\tikzstyle{algo} = [lcomp, text width=6em, fill=gray!30, 
+        minimum height=8em, minimum width=10em, rounded corners,text centered, drop shadow]
+
+\tikzstyle{vecArrow} = [thick, decoration={markings,mark=at position 0 with {\arrowreversed[semithick]{open triangle 60}},mark=at position
+       1 with {\arrow[semithick]{open triangle 60}}},
+       double distance=1.4pt, shorten >= 5.5pt, shorten <= -5.5pt,
+       preaction = {decorate},
+       postaction = {draw,line width=1.4pt, white,shorten >= 4.5pt, shorten <= 4.5pt}]
+
+\tikzstyle{innerWhite} = [semithick, white,line width=1.4pt, shorten >= 4.5pt, shorten <= -7pt]
+
+
+\node[algo] (only) {The Algorithm};
+
+\draw[vecArrow] (only.west)+(-1,0.2) to (only.west)+(0,0.2);
+\draw[innerWhite] (only.west)+(-1,0.2) to (only.west)+(0,0.2);
+
+\end{tikzpicture}

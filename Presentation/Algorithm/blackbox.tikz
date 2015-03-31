@@ -1,0 +1,41 @@
+\begin{tikzpicture}[scale=0.6,box/.style={draw,rounded corners,text width=2.5cm,align=center,minimum height=2.5em,text centered}]
+
+\tiny
+
+\tikzstyle{lcomp}=[draw, fill=blue!20, text width=5em, 
+        text centered, minimum height=2.5em,text centered]
+
+\tikzstyle{blank} = [node distance=1cm,minimum width=-1cm]
+
+\tikzstyle{algo} = [box, text width=10em, fill=gray!30, 
+        minimum height=8em, minimum width=10em, rounded corners,text centered, drop shadow]
+
+\tikzstyle{vecArrow} = [thick, decoration={markings,mark=at position
+   1 with {\arrow[semithick]{open triangle 60}}},
+   double distance=1.4pt, shorten >= 5.5pt,
+   preaction = {decorate},
+   postaction = {draw,line width=1.4pt, white,shorten >= 4.5pt}]
+
+\tikzstyle{innerWhite} = [semithick, white,line width=1.4pt, shorten >= 4.5pt]
+
+
+\node[algo] (only) {The Algorithm};
+\node[blank, left of=only, node distance=3cm] (b1) {};
+\node[blank, above of=b1, node distance=0.35cm] (I1) {Load and DRES Forecasts};
+\node[blank, below of=b1, node distance=0.35cm] (I2) {Network Data};
+\node[blank, right of=only, node distance=3cm] (O) {Optimal Schedule};
+
+\node[blank, left of=only, node distance=0.86cm] (b2) {};
+\node[blank, above of=b2, node distance=0.35cm] (b3) {};
+\node[blank, below of=b2, node distance=0.35cm] (b4) {};
+
+\draw[vecArrow] (I1.east) to (b3);
+\draw[innerWhite] (I1.east) to (b3);
+
+\draw[vecArrow] (I2.east) to (b4);
+\draw[innerWhite] (I2.east) to (b4);
+
+\draw[vecArrow] (only) to (O);
+\draw[innerWhite] (only) to (O);
+
+\end{tikzpicture}

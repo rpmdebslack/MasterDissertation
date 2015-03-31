@@ -1,0 +1,1643 @@
+% ----------------------------------------------------------------------
+%                             Preamble
+% ----------------------------------------------------------------------
+
+\documentclass[xcolor=svgnames,aspectratio=32,8pt]{beamer}
+% \usepackage[size=custom,width=20.3646752982,height=14.4]{beamerposter}
+
+\usepackage[utf8]    {inputenc}
+\usepackage[T1]      {fontenc}
+\usepackage[english] {babel}
+
+\usepackage{amsmath,amsfonts,graphicx,pgfplots}
+\usepackage{beamerleanprogress}
+\usepackage{caption}
+\usepackage{textcomp}
+
+% \usepackage{handoutWithNotes}
+
+% \pgfpagesuselayout{2 on 1 with notes landscape}[a4paper,border shrink=5mm]
+
+\usebackgroundtemplate{%
+  \includegraphics[width=\paperwidth,height=\paperheight]{BG/Title32.png}}
+
+
+\title
+  [Optimal Configuration of Distribution Networks under Technical Constraints based on Predictive Methods]
+  {Optimal Configuration of Distribution Networks under Technical Constraints based on Predictive Methods}
+
+\author
+  [B. P. Swaminathan]
+  {Master's Thesis Dissertation by\\Bhargav P Swaminathan\\{\small M2 - Smart Grids and Buildings}}
+
+\date
+  {June 25, 2014}
+
+\institute
+  {Supervisors:\\Rapha\"{e}l Caire \& Vincent Debusschere}
+
+
+\begin{document}
+
+% ----------------------------------------------------------------------
+% For Align Environment
+
+\setlength{\abovedisplayskip}{0pt}
+\setlength{\belowdisplayskip}{0pt}
+\setlength{\abovedisplayshortskip}{0pt}
+\setlength{\belowdisplayshortskip}{0pt}
+
+% ----------------------------------------------------------------------
+
+\setbeamertemplate{title page}[default][left]
+\maketitle
+
+\usebackgroundtemplate{%
+  \includegraphics[width=\paperwidth,height=\paperheight]{BG/Slides32.png}}
+
+% ----------------------------------------------------------------------
+%                             Introduction
+% ----------------------------------------------------------------------
+
+\section
+  {Introduction}
+
+\begin{frame}
+  {Agenda}{for today's presentation}
+  % \begin{itemize}
+  % \item Background
+  % \item Introduction to the Problem
+  % \item Literature Review\pause
+  % \item Definition of Requirements
+  % \item Test Networks and Models
+  % \item The Algorithm\pause
+  % \item Results Obtained
+  % \item Conclusions and Perspectives
+  % \item Future Work
+  % \end{itemize}
+
+  \begin{minipage}[!h]{0.5\textwidth}
+    \begin{block}{Introduction}
+    \begin{itemize}
+    \item Background
+    \item Introduction to the Problem
+    \item Literature Review
+    \end{itemize}
+    \end{block}
+  \pause
+  \end{minipage}%
+  \begin{minipage}[!h]{0.5\textwidth}
+    \begin{block}{Preliminary Work}
+    \begin{itemize}
+    \item Work Objectives
+    \item Test Networks
+    \item Day-ahead Load and DRES Models
+    \end{itemize}
+    \end{block}
+  \pause
+  \end{minipage}
+
+  \begin{minipage}[!h]{0.5\textwidth}
+    \begin{alertblock}{The Algorithm}
+    \begin{itemize}
+    \item Formulation \& Economic Models
+    \item Components
+    \item Working of the Algorithm
+    \end{itemize}
+    \end{alertblock}
+  \pause
+  \end{minipage}%
+  \begin{minipage}[!h]{0.5\textwidth}
+    \begin{exampleblock}{Results \& Conclusions}
+    \begin{itemize}
+    \item Results Obtained
+    \item Conclusions
+    \item Future Work
+    \end{itemize}
+    \end{exampleblock}
+  \end{minipage}
+
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Background}{Electrical Distribution Network Optimization}
+
+  \begin{itemize}
+    \item \textbf{Merlin and Back} method, close to 40 years ago! \pause
+    \vspace{0.2cm}
+    \item Developments in Optimization. \pause
+    \vspace{0.2cm}
+    \item Shift from \textbf{single-objective} to \textbf{multiple-objectives}, to genetic, and other nature-inspired methods. \pause
+    \vspace{0.2cm}
+    \item Problems with DRES integration! \pause
+    \vspace{0.2cm}
+    \item Distribution network optimization has to take a new, giant leap. \pause
+    \vspace{0.2cm}
+    \item This work proposes a method to take this leap!
+  \end{itemize}
+
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Introduction}{to the problem}
+
+  Why is large-scale DRES integration is a problem?
+
+  \begin{itemize}
+    \item Variability / Intermittency
+    \item Bi-directional Power Flows
+    \item Grid Weakening
+    \item Network Imbalance
+    \item Fault Current Issues
+    \item And finally: Money!
+  \end{itemize}
+
+  \vspace{0.4cm}
+  There is a \textbf{real need} to find solutions that assuage the problem with the integration of DRES.
+
+  % \begin{minipage}[!h]{0.3\paperwidth}
+  % \centering
+  % \includegraphics[width=0.3\paperwidth]{OtherImages/Intermittency.png}\\
+  % Intermittency
+  % \end{minipage}%
+  % \begin{minipage}[!h]{0.3\paperwidth}
+  % \centering
+  % \includegraphics[width=0.3\paperwidth]{OtherImages/ODbg.png}\\
+  % Bi-directional Power Flows
+  % \end{minipage}%
+  % \begin{minipage}[!h]{0.3\paperwidth}
+  % \centering
+  % % \includegraphics[width=0.3\paperwidth]{OtherImages/ODbg.png}
+  % % Bi-directional Power Flows
+  % \end{minipage}%
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Literature Review}{Current Work in the Domain}
+
+  \textbf{Forecasting:}
+  \begin{itemize}
+    \item A lot of work has been done in forecasting for DRES and Loads
+    \item Persistency / NWP based methods
+    \item Both traditional and stochastic load forecasting: fairly \textbf{mature}
+    \item But are they applicable to Distribution Networks?
+  \end{itemize}\pause
+  \vspace{0.5cm}
+  \textbf{Distribution Network Optimization:}
+  \begin{itemize}
+    \item ``Snapshot'' based optimization
+    \item Few instances of multi-temporal optimization
+    \item Even they don't take a lot of issues into account
+    \item Hence, there is a real need for a novel tool
+  \end{itemize}
+
+\end{frame}
+
+% ----------------------------------------------------------------------
+%                             Preparation
+% ----------------------------------------------------------------------
+
+\section
+  {Preliminary Work}
+
+\begin{frame}<handout:0>
+  {}{}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  {\Huge \color{evolvdso} Part II\\\ \\Preliminary Work}
+  \end{changemargin}
+\end{frame}
+
+\begin{frame}
+  {Work Objectives}
+  The following requirements were defined for the work to be done. The work should:\\
+  \vspace{0.2cm}
+  \begin{itemize}
+  \item Create a \textbf{day-ahead schedule} based on DRES and Load forecasts \pause
+  \vspace{0.2cm}
+  \item Effectively utilize all  \textbf{flexibilities} in distribution networks for optimization \pause
+  \vspace{0.2cm}
+  \item \textbf{NOT only use ``snapshot''} based optimziation, i.e. should be multi-temporal \pause
+  \vspace{0.2cm}
+  \item Be \textbf{multi-objective} \pause
+  \vspace{0.2cm}
+  \item Be \textbf{modular} \pause
+  \vspace{0.2cm}
+  \item Be a \textbf{black box} for end-users
+  \end{itemize}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+{Test Networks}{Network 1 - PREDIS Urban Network}
+
+  \vspace{0.5cm}
+  \begin{changemargin}{-0.8cm}{-1cm}
+
+    \begin{minipage}[!h]{0.55\paperwidth}
+
+      \centering
+      \includegraphics[width=0.55\paperwidth]{NwImages/PredisG.png}
+
+    \end{minipage}%
+    \begin{minipage}[!h]{0.45\paperwidth}
+      % \begin{minipage}[!h]{0.25\paperwidth}
+      % \centering
+      % \adjustbox{max width=0.2\paperwidth}{
+      % \begin{tabular}{cc}
+      % \rowcolor{gray!25}
+      % \multicolumn{2}{c}{Base Values}\\
+      % \hline
+      % Voltage & $11$ kV\\
+      % % \hline
+      % \rowcolor{gray!15}
+      % Power & $100$ MVA\\
+      % % \hline
+      % Current &  $5248.6$ A\\
+      % % \hline
+      % \rowcolor{gray!15}
+      % Impedance & $1.21$ $\Omega$\\
+      % \hline
+      % \end{tabular}
+      % }
+      % \end{minipage}%
+      % \begin{minipage}[!h]{0.25\paperwidth}
+      % \centering
+      % \adjustbox{max width=0.2\paperwidth}{
+
+      % \begin{tabular}{cc}
+      % % \hline
+      % \rowcolor{gray!25}
+      % \textbf{Lines} & \textbf{I max}\\
+      % \hline
+      % $7$, $8$, $10$ \& $11$ & $195$ A\\
+      % % \hline
+      % \rowcolor{gray!15}
+      % $14$ & $302$ A\\
+      % % \hline
+      % $4$, $9$ \& $15-17$ & $363$ A\\
+      % % \hline
+      % \rowcolor{gray!15}
+      % $6$ & $402$ A\\
+      % % \hline
+      % $5$ & $538$ A\\
+      % % \hline
+      % \rowcolor{gray!15}
+      % $1-3$, $12$ \& $13$ & $1$ pu\\
+      % \hline
+      % \end{tabular}
+
+      % }
+      % \end{minipage}
+
+      % \vspace{0.5cm}
+
+      \begin{itemize}
+      \setlength{\itemindent}{-0.5em}
+
+      \item Reduced-scale Urban Network
+      \item 14 buses, 17 lines
+      \item Connected Load: 26.5 MVA
+      \item Installed DRES Capacity: 27 MW
+      \item Undervoltage and overcurrent problems
+
+      \end{itemize}
+
+    \end{minipage}
+
+  \end{changemargin}
+
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+{Test Networks}{Network 2 - IEEE $11$kV Rural Network}
+\begin{changemargin}{-1cm}{-1cm} 
+
+\begin{minipage}[!h]{.5\paperwidth}
+\centering
+\vspace{0.4cm}
+\includegraphics[width=0.35\paperwidth]{NwImages/Rural_Network.png}
+\end{minipage}%
+% \begin{minipage}[!h]{.3\paperwidth}
+% \centering
+% % \begin{table}[!h]
+% \adjustbox{max width=0.3\paperwidth}{
+% \begin{tabular}{cc}
+%   \rowcolor{gray!25}
+%   \multicolumn{2}{c}{Base Values}\\
+%   \hline
+%   Voltage & $11$ kV\\
+%   % \hline
+%   \rowcolor{gray!15}
+%   Power & $10$ MVA\\
+%   % \hline
+%   Current &  $524.86$ A\\
+%   % \hline
+%   \rowcolor{gray!15}
+%   Impedance & $12.1$ $\Omega$\\
+%   \hline
+%   \end{tabular}
+% % \end{table}
+% }
+% \\\ \\\ \\\
+% \adjustbox{max width=0.3\paperwidth}{
+% \begin{tabular}{cc}
+%   % \hline
+%   \rowcolor{gray!25}
+%   \textbf{Lines} & \textbf{I max}\\
+%   \hline
+%   Tie Lines & $234$ A\\
+%   % \hline
+%   \rowcolor{gray!15}
+%   $1-18$, $17-23$ & $270$ A\\
+%   $31-39$, $52-57$ & $270$ A \\
+%   % \hline
+%   \rowcolor{gray!15}
+%   $9-16$, $24-30$ & $208$ A\\
+%   $40-51$, $58-68$ & $208$ A\\
+%   \hline
+%   \end{tabular}
+% }
+% \end{minipage}%
+\begin{minipage}[!h]{.5\paperwidth}
+\begin{itemize}
+% \setlength{\itemindent}{-1em}
+\item Larger Network than PREDIS
+\item 70 buses, 79 lines
+\item Connected Load: 5.41 MVA
+\item DRES Info not available
+\end{itemize}
+\end{minipage}
+
+\end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+{Day-ahead Load and DRES Models}{Raw Models}
+
+\begin{changemargin}{-1cm}{-1cm} 
+  \vspace{0.5cm}
+  \begin{minipage}[!h]{0.4\paperwidth}
+
+  \begin{itemize}
+  \item \textbf{Two raw models} extracted from literature.
+  \item Specific weights for different types of loads.
+  \item Residential, Industrial, Commercial, and Public Lighting.
+  \item DRES Models: Values based on characteristic curves.
+  \item Variation of Solar Power etc., taken into account.
+  \end{itemize}
+
+  \end{minipage}%
+  \begin{minipage}[!h]{0.6\paperwidth}
+
+  \begin{figure}[!h]
+  \centering
+  \newlength\figureheight
+  \newlength\figurewidth
+  \setlength\figureheight{2cm}
+  \setlength\figurewidth{0.5\paperwidth}
+  \input{Graphs/Model-Yin.tikz}
+  \end{figure}
+  \begin{figure}[!h]
+  \centering
+  \setlength\figureheight{2cm}
+  \setlength\figurewidth{0.5\paperwidth}
+  \input{Graphs/Model-Lopez.tikz}
+  \end{figure}
+
+  \end{minipage}
+
+\end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Day-ahead Load and DRES Models}{Models Applied to Networks}
+  \vspace{0.3cm}
+  \begin{changemargin}{-0.9cm}{-0.9cm} 
+  \centering
+  \begin{minipage}[!h]{0.45\paperwidth}
+
+    \centering
+    \begin{alertblock}{Load Model A}
+    \begin{itemize}
+      \item This model consists of a simple association of each load type to one node.
+      \item The load in each node varies accordingly for a given 24 hour period.
+    \end{itemize}
+    \end{alertblock}
+
+  \end{minipage}%
+  \begin{minipage}[!h]{0.45\paperwidth}
+    \centering
+    \begin{block}{Load Model B}
+    Each node has a particular \% of loads of each type.
+    \begin{center}
+    \resizebox{0.35\paperwidth}{!}{%
+    \begin{tabular}{ccc}
+    % \hline
+    % \rowcolor{gray!10}
+    \textbf{Load Type} & \textbf{PREDIS Network} & \textbf{Rural Network}\\
+    \hline
+    Residential & $5-80$\% & $8-50$\% \\
+    % \hline
+    \rowcolor{blue!50!black!10}
+    Industrial & $5-50$\% & $20-75$\% \\
+    % \hline
+    Commercial & $0-50$\% & $5-70$\% \\
+    % \hline
+    \rowcolor{blue!50!black!10}
+    Lighting & $5-15$\% & $5-15$\% \\
+    \hline
+    \end{tabular}
+    }
+    \end{center}
+    \end{block}
+
+  \end{minipage}
+  \vspace{0.2cm} \pause
+
+  \begin{minipage}[!h]{0.5\paperwidth}
+    \begin{figure}[!h]
+    \centering
+    PREDIS Network (Based on Model 1)
+    \setlength\figureheight{2cm}
+    \setlength\figurewidth{0.4\paperwidth}
+    \input{Graphs/LoadCurvePREDIS.tikz}
+    \end{figure}
+  \end{minipage}%
+  \begin{minipage}[!h]{0.5\paperwidth}
+    \begin{figure}[!h]
+    % \centering
+    Rural Network (Based on Model 2)
+    \setlength\figureheight{2cm}
+    \setlength\figurewidth{0.4\paperwidth}
+    \hspace{-1cm}
+    \input{Graphs/LoadCurveDas.tikz}
+    \end{figure}
+  \end{minipage}
+
+\end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+%                             Work Done
+% ----------------------------------------------------------------------
+
+\section
+  {The Algorithm}
+
+\begin{frame}<handout:0>
+  {}{}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  {\Huge \color{evolvdso} Part III\\\ \\The Algorithm}
+  \end{changemargin}
+\end{frame}
+
+\begin{frame}
+  {The Algorithm}{Formulation}
+\begin{changemargin}{-1cm}{-1cm}
+\centering
+\vspace{0.4cm}
+\resizebox{0.9\paperwidth}{!}{%
+  \input{Algorithm/blackbox.tikz}
+}\\ \pause
+\vspace{0.5cm}
+
+Available Flexibilities\\
+\vspace{0.15cm}
+\begin{minipage}[!h]{0.25\paperwidth}
+  \centering
+  \includegraphics[width=0.2\paperwidth]{OtherImages/reconf.jpg}
+\end{minipage}%
+\begin{minipage}[!h]{0.25\paperwidth}
+  \centering
+  \includegraphics[width=0.2\paperwidth]{OtherImages/VVC.png}
+\end{minipage}%
+\begin{minipage}[!h]{0.25\paperwidth}
+  \centering
+  \includegraphics[width=0.2\paperwidth]{OtherImages/LR.png}
+\end{minipage}%
+\begin{minipage}[!h]{0.25\paperwidth}
+  \centering
+  \includegraphics[width=0.2\paperwidth]{OtherImages/OLTC.jpeg}
+\end{minipage}
+{\footnotesize \textcopyright\ pro-NERDS, SunValley, gov.com.au, wikipedia}
+\end{changemargin}    
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {The Algorithm}{Economic Models}
+\begin{changemargin}{-0.8cm}{-0.8cm}
+  \vspace{0.3cm}
+  \begin{itemize}
+  \item Switching:
+  \begin{align*} 
+    Cost/switching&=\frac{C_{sw}}{n_{sw}}+ C_{OM}+C_{log}\\
+    C_{OM}&=c \cdot f(t_{sw})
+  \end{align*}
+  \item OLTC:
+  \begin{align*} 
+    Cost/operation&=\frac{C_{OLTC}}{n_{op}}+ C_{OM}+C_{log}\\
+    C_{OM}&=c \cdot f(t_{op})
+  \end{align*}
+  \vspace{0.2cm}
+  \item Models for Load Reduction, VVC, and Violations are more difficult to develop.
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \centering
+  \adjustbox{max width=0.4\paperwidth}{
+  \begin{tabular}{cc}
+  % \hline\hline
+  \rowcolor{gray!15}
+  Switching Operation & $300$ \euro \\
+  % \hline
+  Load Reduction & $6$ \euro/MWh \\
+  % \hline
+  \rowcolor{gray!15}
+  OLTC Operation & $20$ \euro/Tap Change \\
+  % \hline
+  VVC & $132.9$ \euro/MWh \\
+  % \hline
+  \rowcolor{gray!15}
+  Violations & $500$ \euro/violation \\
+  % \hline
+  \end{tabular}
+  }
+
+\end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {The Algorithm}{Components}
+    \vspace{0.3cm}
+    \begin{figure}[!h]
+    \centering
+    \resizebox{!}{0.45\paperwidth}{%
+    \input{Algorithm/Components.tikz}
+    }
+    \end{figure}
+    \vspace{-0.3cm}
+    {\footnotesize Legend: VVC: Voltage VAr Control, LR: Load Reduction, OLTC: On-Load Tap Changing}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {The Algorithm}{Components - Reconfiguration}
+  \begin{changemargin}{-0.9cm}{-1cm}
+
+  \begin{minipage}[H]{0.35\paperwidth}
+  \centering
+  \vspace{0.1cm}
+  Multi-Objective Reconfiguration\\
+  \vspace{1.1cm}
+  {\tiny
+    \def\firstcircle{(90:0.6cm) circle (1.5cm)}
+    \def\secondcircle{(210:1.9cm) circle (1.5cm)}
+    \def\thirdcircle{(330:1.9cm) circle (1.5cm)}
+    \def\fourthcircle{(90:-2.6cm) circle (1.5cm)}
+
+      \begin{tikzpicture}[scale=0.6]
+      \begin{scope}[fill opacity=0.4]
+          \fill[red] \firstcircle;
+          \fill[green] \secondcircle;
+          \fill[blue] \thirdcircle;
+          \fill[yellow] \fourthcircle;
+      \end{scope}
+          \draw \firstcircle node[text=black,above=0.05cm] {Branch Current};
+          \draw \secondcircle node [text=black, left=-0.3cm] {Voltage};
+          \draw \thirdcircle node [text=black,right=-0.3cm] {Losses};
+          \draw \fourthcircle node [text=black,below=0.05cm]{Feeder Current};
+      \end{tikzpicture}
+  }%
+  \end{minipage}%
+  \begin{minipage}[H]{0.65\paperwidth}
+  \centering
+  \begin{itemize}
+  \item Branch exchange based method with pre-selection
+  \item Membership Functions for Each Objective:\\
+  \vspace{0.3cm}
+  \resizebox{0.5\paperwidth}{!}{%
+    \centering
+    \begin{tabular}{c}
+      \cellcolor{blue!25}\\
+      \cellcolor{blue!25}{$\!\begin{aligned} 
+        x_i &= \frac{PLOSS(i)}{PLOSS0} & &i= 1,2,N_k\\
+        \mu L_i &= \frac{(x_{max}-x_i)}{(x_{max}-x_{min})} & &\mathrm{for}\ x_{min}<x_i<x_{max}\\
+        \mu L_i &=0 & &\mathrm{for}\ x_i\le x_{min}\\
+        \mu L_i &=1 & &\mathrm{for}\ x_i\ge x_{max}
+      \end{aligned}$}\\
+      \cellcolor{blue!25}\\
+    \end{tabular}
+  }
+  \vspace{0.3cm}
+  \item Fuzzy min-max principle for finding branch to exchange
+  \item Reconfiguration database based on ``maximum'' conditions
+  \end{itemize}
+  \end{minipage}
+
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {The Algorithm}{Components - Local Management}
+
+   To manage ``local'' violations in distribution networks for the hour when it is launched.\\
+   \vspace{0.2cm}
+   % \begin{tabular}{c|c}
+   % \textbf{Voltage Violations} & \textbf{Current Violations}\\
+   % When $V<0.95pu$ or $V>1.05pu$ & When $I>I_{max}$\\
+   % Solution: Use nearby nodes to improve voltage profile & Solution: Use downstream nodes to try reduce line current\\
+   % Objective function: $f=abs(V-(0.95+c)$ & Objective function: $f=abs(I_{max}-(I+c))$\\
+   % \end{tabular}
+   \begin{minipage}[!h]{0.45\paperwidth}
+    \begin{block}{Voltage Violations}
+      \begin{itemize}
+        \item When $V<0.95pu$ or $V>1.05pu$
+        \item Solution: Use nearby nodes to improve voltage profile
+        \item Objective function: $f=abs(V-(0.95+c))$
+      \end{itemize}
+    \end{block}
+   \end{minipage}%
+   \begin{minipage}[!h]{0.45\paperwidth}
+   \centering
+    \begin{alertblock}{Current Violations}
+      \begin{itemize}
+        \item When $I>I_{max}$
+        \item Solution: Use downstream nodes to try reduce line current
+        \item Objective function: $f=abs(I_{max}-(I+c))$
+      \end{itemize}
+    \end{alertblock}
+   \end{minipage}
+
+   \begin{itemize}
+    \item When both current and voltage violations exist, consider both sets of nodes, $f=abs(V-(0.95+c))+abs(I_{max}-(I+c))$
+    \item Once done, check if $C_{spent} \ge C_{org}$, if yes, do not optimize.
+    \item Return solution to calling function.
+   \end{itemize}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {The Algorithm}{Components - Global Management}
+  \begin{changemargin}{-1cm}{-0.8cm}
+  \centering
+    \begin{tikzpicture}[-,sibling distance=8cm]
+      \small
+      \node {\texttt{Global Management (hour h)}} [edge from parent fork down]
+      child {node {\texttt{With Reconfiguration}}}
+      child {node {\texttt{Without Reconfiguration}}};
+    \end{tikzpicture}\\
+  \vspace{0.5cm}
+  \begin{minipage}[!h]{0.5\paperwidth}
+  \centering
+    \begin{itemize}
+      \item At hour \emph{h}, perform reconfiguration, and globally optimize using LM functions
+      \item From hour \emph{h+1} to end of the day, check for violations
+      \item Classify violations found and launch the respective management function
+      \item At the end of the day, calculate overall costs\\and feed it back to calling function
+    \end{itemize}
+  \end{minipage}%
+  \begin{minipage}[!h]{0.5\paperwidth}
+  \centering
+    \begin{itemize}
+      \item At hour \emph{h}, use only LM functions to optimize globally
+      \item From hour \emph{h+1} to end of the day, check for violations
+      \item Classify violations found and launch the respective management function
+      \item At the end of the day, calculate overall costs\\and feed it back to calling function
+    \end{itemize}
+  \end{minipage}
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {The Algorithm}{Working}
+    \vspace{0.6cm}
+    \begin{changemargin}{-1cm}{-1cm}
+    \begin{figure}[!h]
+    \centering
+    \resizebox{0.95\paperwidth}{!}{%
+    \input{Algorithm/Working.tikz}
+    }
+    \end{figure}
+    \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+% \begin{frame}
+%   {The Algorithm}{Working}
+%   \centering
+
+%   \begin{tikzpicture}
+%   \draw (0,0) -- (11.5,0);
+%   \draw[snake=ticks,segment length=0.5cm] (0,0) -- (11.5,0);
+%   \end{tikzpicture}
+% \end{frame}
+
+
+% ----------------------------------------------------------------------
+%                             Results
+% ----------------------------------------------------------------------
+
+\section
+  {Results \& Conclusions}
+
+\begin{frame}<handout:0>
+  {}{}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  {\Huge \color{evolvdso} Part IV\\\ \\Results \& Conclusions}
+  \end{changemargin}
+\end{frame}
+
+\begin{frame}
+  {Initial Results}{Why ``Maximum'' Condition was Chosen}
+\begin{changemargin}{-1cm}{-1cm}
+\centering
+\vspace{0.35cm}
+  \begin{minipage}[!h]{0.5\paperwidth}
+    \begin{figure}[!h]
+      \centering
+      PREDIS Network
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/MandB-PREDIS-Losses_oldload.tikz}
+    \end{figure}
+  \end{minipage}%
+  \begin{minipage}[!h]{0.5\paperwidth}
+    \begin{figure}[!h]
+      \centering
+      Rural Network
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/MandB-Das-Losses_oldload.tikz}
+    \end{figure}
+  \end{minipage}
+\end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Results}{Methodology}
+
+  \begin{itemize}
+  \item Both networks were tested with the two load models.\\\ \\
+
+  \item Two initial configurations were used: the original, and the 24 hour optimal configurations.\\\ \\ \pause
+
+    \vspace{0.5cm} 
+    \begin{tabular}{cc}
+    \rowcolor{gray!25}
+    \multicolumn{2}{c}{Output Variables}\\
+    \hline
+    \rowcolor{gray!15}
+    Money Spent without Optimization & Money Spent with Optimization\\
+    Load Reduction effected & DRES VVC Outputs\\
+    \rowcolor{gray!15}
+    Number of Switching Operations & Number of OLTC Operations\\
+    Loss Curves over the 24h period & Complete Bus Voltage Profiles\\
+    \rowcolor{gray!15}
+    Violations in the Network & Final Line and Bus statuses for every hour\\
+    \hline
+    \end{tabular}
+
+  \end{itemize}
+
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Results}{PREDIS Network - Load Model A}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  \vspace{0.4cm}
+  % \begin{minipage}[!h]{0.65\paperwidth}
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/PREDIS/OldLoad/LossesOrg.tikz}
+    \end{minipage}%
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/PREDIS/OldLoad/LossesOpt.tikz}
+    \end{minipage}\\
+  % \end{minipage}
+  % \vspace{0.4cm}
+  % \resizebox{0.9\paperwidth}{!}{%}
+  %   \begin{tabular}{cccc}
+  %   \rowcolor{gray!25}
+  %   & \textbf{Unoptimized Network} & \textbf{Begin With Original Configuraiton} & \textbf{Begin With Optimal Configuration}\\
+  %   \hline
+  %   Losses & & & \\
+  %   \hline
+  %   \end{tabular}
+  % }
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Results}{PREDIS Network - Load Model A}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  \vspace{0.4cm}
+  % \begin{minipage}[!h]{0.65\paperwidth}
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/PREDIS/OldLoad/VtgOrg.tikz}
+    \end{minipage}%
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/PREDIS/OldLoad/VtgOpt.tikz}
+    \end{minipage}\\
+  % \end{minipage}
+  % \vspace{0.2cm}
+  \resizebox{0.9\paperwidth}{!}{%}
+    \begin{tabular}{cccc}
+    \rowcolor{gray!25}
+    & \textbf{Unoptimized Network} & \textbf{Begin With Original Configuraiton} & \textbf{Begin With Optimal Configuration}\\
+    \hline
+    Minimum Voltage (pu) & $0.8417$ & \cellcolor{green!25}$0.9359$ & $0.9290$\\
+    % \rowcolor{gray!15}
+    Average Voltage (pu) & $0.9700$ & \cellcolor{green!25}$0.9826$ & $0.9809$\\
+    Maximum Voltage (pu) & $1.0686$ & \cellcolor{green!25}$1.0413$ & \cellcolor{green!25}$1.0413$\\
+    \hline
+    \end{tabular}
+  }
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Results}{PREDIS Network - Load Model A}
+  \begin{changemargin}{-1cm}{-1cm}
+  \vspace{0.4cm}
+  \centering
+    {\tiny%
+    \setlength\figureheight{3cm}
+    \setlength\figurewidth{0.9\paperwidth}
+    \input{Graphs/Results/PREDIS/OldLoad/VioBoth.tikz}
+    }\\
+    \vspace{0.1cm}
+    % \begin{minipage}[!h]{0.65\paperwidth}
+      \centering
+      \resizebox{0.7\paperwidth}{!}{%}
+        \begin{tabular}{ccc}
+        \rowcolor{gray!25}
+        \textbf{Network Parameter} & \textbf{Original Configuration} & \textbf{Optimal Configuration}\\
+        % \rowcolor{gray!25}
+        % \textbf{Parameter} & \textbf{Configuration} & \textbf{Configuration}\\
+        \hline
+        Money Spent without Optimization & \multicolumn{2}{c}{\euro\ $41057$}\\
+        \rowcolor{gray!15}
+        Money Spent with Optimization & \euro\ $14096$ & \euro\ $13994$\\
+        Original Losses & \multicolumn{2}{c}{$11503$ kWh}\\
+        \rowcolor{gray!15}
+        Optimal Losses & $2991$ kWh & $3406$ kWh\\
+        Load Reduced & \multicolumn{2}{c}{$354$ kWh}\\
+        \rowcolor{gray!15}
+        VVC Energy & \multicolumn{2}{c}{$512$ kVArh}\\
+        Switching Operations & $8$ ($1$ Reconfiguration) & $6$ ($1$ Reconfiguration)\\
+        \rowcolor{gray!15}
+        OLTC Operations & \multicolumn{2}{c}{$3$}\\
+        \hline
+        \end{tabular}
+      }
+    % \end{minipage}%
+    % \begin{minipage}[!h]{0.35\paperwidth}
+    % \centering
+    %   \resizebox{0.3\paperwidth}{!}{%}
+    %     \begin{tabular}{cc}
+    %     \rowcolor{gray!25}
+    %     \multicolumn{2}{c}{\textbf{Violations (Voltage + Current)}}\\
+    %     \hline
+    %     Unoptimized Network & $77$ \\
+    %     \rowcolor{gray!15}
+    %     Begin with Original Configuration & $555$\\
+    %     Begin with Optimal Configuration & $666$\\
+    %     \hline
+    %     \end{tabular}
+    %   }
+    % \end{minipage}
+  \end{changemargin}
+\end{frame}
+
+
+% ----------------------------------------------------------------------
+  
+%                            RURAL NETWORK
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Results}{Rural Network - Load Model B}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  \vspace{0.4cm}
+  % \begin{minipage}[!h]{0.65\paperwidth}
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/Das/NewLoad/LossesOrg.tikz}
+    \end{minipage}%
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/Das/NewLoad/LossesOpt.tikz}
+    \end{minipage}\\
+  % \end{minipage}
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Results}{Rural Network - Load Model B}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  \vspace{0.4cm}
+  % \begin{minipage}[!h]{0.65\paperwidth}
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/Das/NewLoad/VtgOrg.tikz}
+    \end{minipage}%
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/Das/NewLoad/VtgOpt.tikz}
+    \end{minipage}\\
+  % \end{minipage}
+  % \vspace{0.2cm}
+  \resizebox{0.9\paperwidth}{!}{%}
+    \begin{tabular}{cccc}
+    \rowcolor{gray!25}
+    & \textbf{Unoptimized Network} & \textbf{Begin With Original Configuraiton} & \textbf{Begin With Optimal Configuration}\\
+    \hline
+    Minimum Voltage (pu) & $0.9278$ & \cellcolor{green!25}$0.9467$ & $\cellcolor{green!25}0.9467$ \\
+    % \rowcolor{gray!15}
+    Average Voltage (pu) & $0.9829$ & $0.9834$ & \cellcolor{green!25}$0.9836$\\
+    Maximum Voltage (pu) & $1.0065$ & \cellcolor{green!25}$1.0065$ & \cellcolor{green!25}$1.0037$\\
+    \hline
+    \end{tabular}
+  }
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Results}{Rural Network - Load Model B}
+  \begin{changemargin}{-1cm}{-1cm}
+  \vspace{0.4cm}
+  \centering
+    {\tiny%
+    \setlength\figureheight{3cm}
+    \setlength\figurewidth{0.9\paperwidth}
+    \input{Graphs/Results/Das/NewLoad/VioBoth.tikz}
+    }\\
+    \vspace{0.1cm}
+    % \begin{minipage}[!h]{0.65\paperwidth}
+      \centering
+      \resizebox{0.7\paperwidth}{!}{%}
+        \begin{tabular}{ccc}
+        \rowcolor{gray!25}
+        \textbf{Network Parameter} & \textbf{Original Configuration} & \textbf{Optimal Configuration}\\
+        % \rowcolor{gray!25}
+        % \textbf{Parameter} & \textbf{Configuration} & \textbf{Configuration}\\
+        \hline
+        Money Spent without Optimization & \multicolumn{2}{c}{\euro\ $17136$}\\
+        \rowcolor{gray!15}
+        Money Spent with Optimization & \euro\ $7818$ & \euro\ $10824$\\
+        Original Losses & \multicolumn{2}{c}{$1022$ kWh}\\
+        \rowcolor{gray!15}
+        Optimal Losses & $887$ kWh & $845$ kWh\\
+        Load Reduced & \multicolumn{2}{c}{$\sim 0$ kWh}\\
+        \rowcolor{gray!15}
+        VVC Energy & \multicolumn{2}{c}{$0$ kVArh}\\
+        Switching Operations & $14$ ($2$ Reconfigurations) & $2$ ($1$ Reconfiguration)\\
+        \rowcolor{gray!15}
+        OLTC Operations & \multicolumn{2}{c}{$0$}\\
+        \hline
+        \end{tabular}
+      }
+    % \end{minipage}%
+    % \begin{minipage}[!h]{0.35\paperwidth}
+    % \centering
+    %   \resizebox{0.3\paperwidth}{!}{%}
+    %     \begin{tabular}{cc}
+    %     \rowcolor{gray!25}
+    %     \multicolumn{2}{c}{\textbf{Violations (Voltage + Current)}}\\
+    %     \hline
+    %     Unoptimized Network & $77$ \\
+    %     \rowcolor{gray!15}
+    %     Begin with Original Configuration & $555$\\
+    %     Begin with Optimal Configuration & $666$\\
+    %     \hline
+    %     \end{tabular}
+    %   }
+    % \end{minipage}
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Conclusions}{}
+
+    \begin{block}{The developed algorithm}
+    \begin{itemize}
+      \item Can optimize networks with a variety of characteristics.\\
+      \item Is multi-objective and multi-temporal.\\
+      \item Takes into account the day-ahead forecasts of DRES and loads, and uses inherent flexibilities.
+      \item Outputs a day-ahead schedule.
+      \item Provides Up to $70$\% reduction in \textbf{expenditure}, $91$\% reduction in \textbf{violations}, and $75$\% reduction in \textbf{losses}.\\
+      \item Executes quickly.
+    \end{itemize}
+  \end{block}\pause
+
+  \begin{block}{Professional and Personal Perspectives}
+    \begin{itemize}
+      \item Professional Perspectives: about my work in the laboratory
+      \item Personal Perspectives: studying abroad
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}
+  {Future Work}{}
+
+  \begin{exampleblock}{Work envisaged}
+    \begin{itemize}
+      \item Sensibility studies
+      \item The development of a novel reconfiguration function
+      \item The development of a better multi-objective constrained optimization function
+      \item The development of a complete economic model
+      \item The development of a day-ahead market based purchase scenario
+      \item The development of a probabilistic load-flow function
+    \end{itemize}
+  All as a part of my PhD here at G2ELab, commencing in September.
+  \end{exampleblock}
+
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+% \begin{frame}
+%   {References}
+
+%   \bibliographystyle{ieeetr}
+%   \bibliography{ref}
+
+% \end{frame}
+
+% ----------------------------------------------------------------------
+
+
+\begin{frame}<handout:0>
+  {}{}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  {\Huge \color{evolvdso}Thank You! \smiley{}\\\ \\Questions? \frownie{}}
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+
+\begin{frame}<handout:0>
+  {}{}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  {\Huge \color{evolvdso}Elevator Pitch}\\
+  \vspace{0.3cm}
+  \includegraphics[width=0.6\paperwidth]{OtherImages/ElevatorPitch.jpg}
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+
+\begin{frame}<handout:0>
+  {}{}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  {\Huge \color{evolvdso}Back-up Slides}
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}<handout:0>
+  {The Algorithm}{Components - Reconfiguration (Extras)}
+  \begin{changemargin}{-0.9cm}{-1cm}
+
+  \begin{minipage}[H]{0.35\paperwidth}
+  \centering
+  \vspace{0.1cm}
+  Multi-Objective Reconfiguration\\
+  \vspace{1.1cm}
+  {\tiny
+    \def\firstcircle{(90:0.6cm) circle (1.5cm)}
+    \def\secondcircle{(210:1.9cm) circle (1.5cm)}
+    \def\thirdcircle{(330:1.9cm) circle (1.5cm)}
+    \def\fourthcircle{(90:-2.6cm) circle (1.5cm)}
+
+      \begin{tikzpicture}[scale=0.6]
+      \begin{scope}[fill opacity=0.4]
+          \fill[red] \firstcircle;
+          \fill[green] \secondcircle;
+          \fill[blue] \thirdcircle;
+          \fill[yellow] \fourthcircle;
+      \end{scope}
+          \draw \firstcircle node[text=black,above=0.05cm] {Branch Current};
+          \draw \secondcircle node [text=black, left=-0.3cm] {Voltage};
+          \draw \thirdcircle node [text=black,right=-0.3cm] {Losses};
+          \draw \fourthcircle node [text=black,below=0.05cm]{Feeder Current};
+      \end{tikzpicture}
+  }%
+  \end{minipage}%
+  \begin{minipage}[H]{0.65\paperwidth}
+  \centering
+  \begin{itemize}
+  \item Branch exchange based method with pre-selection
+  \item Membership Functions for Each Objective:\\
+  \vspace{0.3cm}
+  \resizebox{0.58\paperwidth}{!}{%
+    \begin{tabular}{c|c}
+      \cellcolor{blue!25} & \cellcolor{green!25}\\
+      \cellcolor{blue!25}{$\!\begin{aligned} 
+        x_i &= \frac{PLOSS(i)}{PLOSS0} & &i= 1,2,N_k\\
+        \mu L_i &= \frac{(x_{max}-x_i)}{(x_{max}-x_{min})} & &\mathrm{for}\ x_{min}<x_i<x_{max}\\
+        \mu L_i &=0 & &\mathrm{for}\ x_i\le x_{min}\\
+        \mu L_i &=1 & &\mathrm{for}\ x_i\ge x_{max}
+      \end{aligned}$} &
+      \cellcolor{green!25}{$\!\begin{aligned} 
+        y_i &= |min(V_{nodes})-V_s|\\
+        \ \\
+        \mu V_i &= \frac{(y_{max}-y_i)}{(y_{max}-y_{min})} & &\mathrm{for}\ y_{min}<y_i<y_{max}\\
+        \mu V_i &=1 & &\mathrm{for}\ y_i\le y_{min}\\
+        \mu V_i &=0 & &\mathrm{for}\ y_i\ge y_{max}
+      \end{aligned}$}\\
+      \cellcolor{blue!25}&\cellcolor{green!25}\\
+      \hline
+      \cellcolor{red!25}&\cellcolor{yellow!25}\\
+      \cellcolor{red!25}{$\!\begin{aligned} 
+        z_i &= max\left(\frac{I}{I_{max}}\right) & &\mathrm{for\ all\ branches}\\
+        \mu A_i &= \frac{(z_{max}-z_i)}{(z_{max}-z_{min})} & &\mathrm{for}\ z_{min}<z_i<z_{max}\\
+        \mu A_i &=1 & &\mathrm{for}\ z_i\le z_{min}\\
+        \mu A_i &=0 & &\mathrm{for}\ z_i\ge z_{max}
+        \end{aligned}$} &
+      \cellcolor{yellow!25}{$\!\begin{aligned} 
+            u_i &= max\left(\frac{IF_{max}-IF_{feeder}}{IF_{max}}\right) & &\mathrm{for\ all\ feeders}\\
+            \mu B_i &= \frac{(u_{max}-u_i)}{(u_{max}-u_{min})} & &\mathrm{for}\ u_{min}<u_i<u_{max}\\
+            \mu B_i &=1 & &\mathrm{for}\ u_i\le u_{min}\\
+            \mu B_i &=0 & &\mathrm{for}\ u_i\ge u_{max}
+            \end{aligned}$}\\
+      \cellcolor{red!25} & \cellcolor{yellow!25}
+    \end{tabular}
+  }
+  \vspace{0.3cm}
+  \item Fuzzy min-max principle for finding branch to exchange
+  \item Creation of the reconfiguration database based on ``maximum'' conditions
+  \end{itemize}
+  \end{minipage}
+
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}<handout:0>
+  {The Algorithm}{Working}
+    \vspace{0.6cm}
+    \begin{changemargin}{-1cm}{-1cm}
+    \begin{figure}[!h]
+    \centering
+    \resizebox{!}{0.45\paperwidth}{%
+    \input{Algorithm/Flowchart.tikz}
+    }
+    \end{figure}
+    \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}<handout:0>
+  {Initial Results}{Why ``Maximum'' Condition was Chosen}
+\begin{changemargin}{-1cm}{-1cm}
+  \vspace{0.3cm}
+  \begin{minipage}[!h]{0.3\paperwidth}
+  \begin{figure}[!h]
+  \tiny
+  \centering
+  \vspace{0.3cm}
+  PREDIS Network - Reconfiguration Results
+    \setlength\figureheight{2cm}
+    \setlength\figurewidth{0.25\paperwidth}
+    \input{Graphs/MandB-PREDIS-Losses_oldloadbkp.tikz}
+    \ \\
+    \setlength\figureheight{2cm}
+    \setlength\figurewidth{0.25\paperwidth}
+    \input{Graphs/Fuzzy-PREDIS-Losses_oldload.tikz}
+  \end{figure}
+  \end{minipage}%
+  \begin{minipage}[!h]{0.055\paperwidth}
+  \vspace{0.225cm}
+  \flushright
+  \rule[-5mm]{0.1mm}{6.55cm}
+  \end{minipage}%
+  % \vrule
+  \begin{minipage}[!h]{0.625\paperwidth}
+  \tiny
+  \centering
+    Rural Network - Reconfiguration Results
+    \begin{minipage}[!h]{0.3\paperwidth}
+      \centering
+      \setlength\figureheight{2cm}
+      \setlength\figurewidth{0.25\paperwidth}
+      \input{Graphs/MandB-Das-Losses_oldloadbkp.tikz}
+    \end{minipage}%
+    \begin{minipage}[!h]{0.3\paperwidth}
+      \centering
+      \setlength\figureheight{2cm}
+      \setlength\figurewidth{0.25\paperwidth}
+      \input{Graphs/Fuzzy-Das-Losses_oldload.tikz}
+    \end{minipage}\\
+    \vspace{-0.15cm}
+    \begin{minipage}[!h]{0.65\paperwidth}
+    \centering
+    \rule[-5mm]{0.65\paperwidth}{0.12mm}\\
+    \vspace{0.1cm}
+    Comparison for ``Maximum'' Conditions\\
+    \resizebox{0.55\paperwidth}{!}{%}
+      \tiny
+      \centering
+      \begin{tabular}{lccc}
+        % \hline
+        \rowcolor{gray!25}
+        \multicolumn{1}{c}{\textbf{Parameter}} & \textbf{Original Network} & \textbf{Merlin \& Back} & \textbf{Fuzzy Algorithm}\\
+        \hline
+        \rowcolor{gray!25}
+        \multicolumn{4}{l}{\textbf{PREDIS Network}} \\
+        \hline
+        Power Losses (kWh) & $11503.77$ & $2678.49$ & $2796.41$ \\
+        % \hline
+        \rowcolor{gray!15}
+        Minimum Voltage (pu) & $0.9359$ & $0.9415$ & $0.9433$\\
+        % \hline
+        Voltage Violations & $70$ & $9$ & $5$ \\
+        \hline
+        \rowcolor{gray!25}
+        \multicolumn{4}{l}{\textbf{Rural Network}} \\
+        \hline
+        Power Losses (kWh) & $999.81$ & $814.11$ & $822.82$ \\
+        % \hline
+        \rowcolor{gray!15}
+        Minimum Voltage (pu) & $0.9262$ & $0.9410$ & $0.9462$\\
+        % \hline
+        Voltage Violations & $34$ & $11$ & $7$ \\
+        \hline
+      \end{tabular}
+    }
+    \end{minipage}
+  \end{minipage}
+
+\end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}<handout:0>
+  {Results}{PREDIS Network - Load Model B}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  \vspace{0.4cm}
+  % \begin{minipage}[!h]{0.65\paperwidth}
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/PREDIS/NewLoad/LossesOrg.tikz}
+    \end{minipage}%
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/PREDIS/NewLoad/LossesOpt.tikz}
+    \end{minipage}\\
+  % \end{minipage}
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}<handout:0>
+  {Results}{PREDIS Network - Load Model B}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  \vspace{0.4cm}
+  % \begin{minipage}[!h]{0.65\paperwidth}
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/PREDIS/NewLoad/VtgOrg.tikz}
+    \end{minipage}%
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/PREDIS/NewLoad/VtgOpt.tikz}
+    \end{minipage}\\
+  % \end{minipage}
+  % \vspace{0.2cm}
+  \resizebox{0.9\paperwidth}{!}{%}
+    \begin{tabular}{cccc}
+    \rowcolor{gray!25}
+    & \textbf{Unoptimized Network} & \textbf{Begin With Original Configuraiton} & \textbf{Begin With Optimal Configuration}\\
+    \hline
+    Minimum Voltage (pu) & $0.8775$ & \cellcolor{green!25}$0.9156$ & $0.9122$\\
+    % \rowcolor{gray!15}
+    Average Voltage (pu) & $0.9722$ & \cellcolor{green!25}$0.9836$ & \cellcolor{green!25}$0.9836$\\
+    Maximum Voltage (pu) & $1.0658$ & \cellcolor{green!25}$1.0409$ & \cellcolor{green!25}$1.0409$\\
+    \hline
+    \end{tabular}
+  }
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}<handout:0>
+  {Results}{PREDIS Network - Load Model B}
+  \begin{changemargin}{-1cm}{-1cm}
+  \vspace{0.4cm}
+  \centering
+    {\tiny%
+    \setlength\figureheight{3cm}
+    \setlength\figurewidth{0.9\paperwidth}
+    \input{Graphs/Results/PREDIS/NewLoad/VioBoth.tikz}
+    }\\
+    \vspace{0.1cm}
+    % \begin{minipage}[!h]{0.65\paperwidth}
+      \centering
+      \resizebox{0.7\paperwidth}{!}{%}
+        \begin{tabular}{ccc}
+        \rowcolor{gray!25}
+        \textbf{Network Parameter} & \textbf{Original Configuration} & \textbf{Optimal Configuration}\\
+        % \rowcolor{gray!25}
+        % \textbf{Parameter} & \textbf{Configuration} & \textbf{Configuration}\\
+        \hline
+        Money Spent without Optimization & \multicolumn{2}{c}{\euro\ $35807$}\\
+        \rowcolor{gray!15}
+        Money Spent with Optimization & \euro\ $12560.6$ & \euro\ $14793.89$\\
+        Original Losses & \multicolumn{2}{c}{$9834$ kWh}\\
+        \rowcolor{gray!15}
+        Optimal Losses & $3247$ kWh & $3219$ kWh\\
+        Load Reduced & \multicolumn{2}{c}{$\sim 0$ kWh}\\
+        \rowcolor{gray!15}
+        VVC Energy & \multicolumn{2}{c}{$0$ kVArh}\\
+        Switching Operations & $10$ ($1$ Reconfiguration) & $6$ ($2$ Reconfigurations)\\
+        \rowcolor{gray!15}
+        OLTC Operations & \multicolumn{2}{c}{$0$}\\
+        \hline
+        \end{tabular}
+      }
+    % \end{minipage}%
+    % \begin{minipage}[!h]{0.35\paperwidth}
+    % \centering
+    %   \resizebox{0.3\paperwidth}{!}{%}
+    %     \begin{tabular}{cc}
+    %     \rowcolor{gray!25}
+    %     \multicolumn{2}{c}{\textbf{Violations (Voltage + Current)}}\\
+    %     \hline
+    %     Unoptimized Network & $77$ \\
+    %     \rowcolor{gray!15}
+    %     Begin with Original Configuration & $555$\\
+    %     Begin with Optimal Configuration & $666$\\
+    %     \hline
+    %     \end{tabular}
+    %   }
+    % \end{minipage}
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}<handout:0>
+  {Results}{Rural Network - Load Model A}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  \vspace{0.4cm}
+  % \begin{minipage}[!h]{0.65\paperwidth}
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/Das/OldLoad/LossesOrg.tikz}
+    \end{minipage}%
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/Das/OldLoad/LossesOpt.tikz}
+    \end{minipage}\\
+  % \end{minipage}
+  % \vspace{0.4cm}
+  % \resizebox{0.9\paperwidth}{!}{%}
+  %   \begin{tabular}{cccc}
+  %   \rowcolor{gray!25}
+  %   & \textbf{Unoptimized Network} & \textbf{Begin With Original Configuraiton} & \textbf{Begin With Optimal Configuration}\\
+  %   \hline
+  %   Losses & & & \\
+  %   \hline
+  %   \end{tabular}
+  % }
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}<handout:0>
+  {Results}{Rural Network - Load Model A}
+  \begin{changemargin}{-1cm}{-1cm}
+  \centering
+  \vspace{0.4cm}
+  % \begin{minipage}[!h]{0.65\paperwidth}
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/Das/OldLoad/VtgOrg.tikz}
+    \end{minipage}%
+    \begin{minipage}[!h]{0.5\paperwidth}
+    \centering
+      \setlength\figureheight{3.5cm}
+      \setlength\figurewidth{0.35\paperwidth}
+      \input{Graphs/Results/Das/OldLoad/VtgOpt.tikz}
+    \end{minipage}\\
+  % \end{minipage}
+  % \vspace{0.2cm}
+  \resizebox{0.9\paperwidth}{!}{%}
+    \begin{tabular}{cccc}
+    \rowcolor{gray!25}
+    & \textbf{Unoptimized Network} & \textbf{Begin With Original Configuraiton} & \textbf{Begin With Optimal Configuration}\\
+    \hline
+    Minimum Voltage (pu) & $0.9262$ & $0.9471$ & \cellcolor{green!25}$0.9494$\\
+    % \rowcolor{gray!15}
+    Average Voltage (pu) & $0.9829$ & $0.9833$ & \cellcolor{green!25}$0.9838$\\
+    Maximum Voltage (pu) & $1.0023$ & \cellcolor{green!25}$1.0023$ & \cellcolor{green!25}$1.0004$\\
+    \hline
+    \end{tabular}
+  }
+  \end{changemargin}
+\end{frame}
+
+% ----------------------------------------------------------------------
+
+\begin{frame}<handout:0>
+  {Results}{Rural Network - Load Model A}
+  \begin{changemargin}{-1cm}{-1cm}
+  \vspace{0.4cm}
+  \centering
+    {\tiny%
+    \setlength\figureheight{3cm}
+    \setlength\figurewidth{0.9\paperwidth}
+    \input{Graphs/Results/Das/OldLoad/VioBoth.tikz}
+    }\\
+    \vspace{0.1cm}
+    % \begin{minipage}[!h]{0.65\paperwidth}
+      \centering
+      \resizebox{0.7\paperwidth}{!}{%}
+        \begin{tabular}{ccc}
+        \rowcolor{gray!25}
+        \textbf{Network Parameter} & \textbf{Original Configuration} & \textbf{Optimal Configuration}\\
+        % \rowcolor{gray!25}
+        % \textbf{Parameter} & \textbf{Configuration} & \textbf{Configuration}\\
+        \hline
+        Money Spent without Optimization & \multicolumn{2}{c}{\euro\ $17133$}\\
+        \rowcolor{gray!15}
+        Money Spent with Optimization & \euro\ $5246$ & \euro\ $6243$\\
+        Original Losses & \multicolumn{2}{c}{$1000$ kWh}\\
+        \rowcolor{gray!15}
+        Optimal Losses & $900$ kWh & $814$ kWh\\
+        Load Reduced & \multicolumn{2}{c}{$\sim 0$ kWh}\\
+        \rowcolor{gray!15}
+        VVC Energy & $45$ kVArh & $40$ kVArh\\
+        Switching Operations & $12$ ($1$ Reconfiguration) & $0$ ($0$ Reconfigurations)\\
+        \rowcolor{gray!15}
+        OLTC Operations & \multicolumn{2}{c}{$1$}\\
+        \hline
+        \end{tabular}
+      }
+    % \end{minipage}%
+    % \begin{minipage}[!h]{0.35\paperwidth}
+    % \centering
+    %   \resizebox{0.3\paperwidth}{!}{%}
+    %     \begin{tabular}{cc}
+    %     \rowcolor{gray!25}
+    %     \multicolumn{2}{c}{\textbf{Violations (Voltage + Current)}}\\
+    %     \hline
+    %     Unoptimized Network & $77$ \\
+    %     \rowcolor{gray!15}
+    %     Begin with Original Configuration & $555$\\
+    %     Begin with Optimal Configuration & $666$\\
+    %     \hline
+    %     \end{tabular}
+    %   }
+    % \end{minipage}
+  \end{changemargin}
+\end{frame}
+
+\end{document}
+
+
+
+% \begin{frame}
+%   {Pictures}
+
+%   \begin{figure}[t]
+%     \centering
+%     \includegraphics[height=\dimexpr11\textheight/16\relax]{ducks}
+%     \caption{Kissing ducks}
+%   \end{figure}
+% \end{frame}
+
+
+% \begin{frame}
+%   {A Movie}
+
+%   \begin{block}{Some block}
+%     \begin{itemize}
+%     \item Movies only seem to work in Adobe Reader
+%     \item Movie file is not embedded, it must be on the computer
+%     \end{itemize}
+%   \end{block}
+
+%   \begin{exampleblock}{Some more block}
+%     Movies only seem to work in Adobe Reader\par
+%     Movie file is not embedded, it must be on the computer
+%   \end{exampleblock}
+
+%   \begin{alertblock}{}
+%     Some text in here.
+%     \begin{itemize}
+%     \item Movies only seem to work in Adobe Reader
+%     \item Movie file is not embedded, it must be on the computer
+%     \end{itemize}
+%   \end{alertblock}
+% \end{frame}
+
+% \begin{frame}
+%   {Credits}
+
+%   \begin{itemize}
+%   \item Brought to you by Cédric Mauclair
+%   \item Please let me know about improvements!
+%   \item inspiration: \url{http://www.shawnlankton.com}... (in code)
+%   \end{itemize}
+% \end{frame}
+

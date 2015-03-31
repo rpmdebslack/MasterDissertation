@@ -1,0 +1,53 @@
+\begin{tikzpicture}[node distance = 1.5cm, auto]
+\small
+
+\tikzstyle{blank} = [node distance=1cm,minimum width=-1cm]
+\tikzstyle{dot} = [draw, shape=circle, fill=red, minimum size=3mm,scale=0.5]
+\tikzstyle{line} = [draw, -latex']
+
+
+\node [blank] (start) {Start (0h)};
+\node [blank, above of=start, node distance=0.25cm] (text1) {};
+
+\node [blank, right of=text1, node distance=3cm] (l1) {Local Vio. (h1)};
+% Because Scale = 0.5
+\node [dot,right of=start, node distance=6cm] (d1) {};
+
+\node [blank, right of=text1, node distance=5.5cm] (g1) {Global Vio. (h2)};
+\node [dot,right of=start, node distance=11cm] (d2) {};
+
+\node [blank, right of=text1, node distance=8cm] (l2) {Local Vio. (h3)};
+\node [dot,right of=start, node distance=16cm] (d3) {};
+
+\node [blank, right of=text1, node distance=12cm] (l3) {Local Vio. (h4)};
+\node [dot,right of=start, node distance=24cm] (d4) {};
+
+\node [blank, right of=start, node distance=15cm] (end1) {Cost = C1};
+
+\node [blank, below of=end1, node distance=2cm] (end2) {Cost = C2};
+\node [blank, above of=end2, node distance=0.25cm] (text2) {};
+
+\node [blank, below of=end2, node distance=2cm] (end3) {Cost = C3};
+\node [blank, above of=end3, node distance=0.25cm] (text3) {};
+
+\node [blank, below of=end3, node distance=2cm] (end4) {Cost = C4};
+\node [blank, above of=end4, node distance=0.25cm] (text4) {};
+
+\node [blank, left of=text3, node distance=8cm] (l4) {Local Vio. (h5)};
+\node [dot,left of=end3, node distance=16cm] (d5) {};
+
+\node [blank, left of=text3, node distance=6cm] (g2) {Global Vio. (h6)};
+\node [dot,left of=end3, node distance=12cm] (d6) {};
+
+\node [blank, left of=text3, node distance=2cm] (l5) {Local Vio. (h7)};
+\node [dot,left of=end3, node distance=4cm] (d7) {};
+
+\node [blank, left of=text4, node distance=3.5cm] (l6) {Local Vio. (h8)};
+\node [dot,left of=end4, node distance=7cm] (d8) {};
+
+\path [line] (start) -- (end1);
+\path [line] ($(d2.south)!0.5!(d2.north)$) |- (end3);
+\path [line] ($(d4.south)!0.5!(d4.north)$) |- (end2);
+\path [line] ($(d6.south)!0.5!(d6.north)$) |- (end4);
+
+\end{tikzpicture}
